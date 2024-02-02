@@ -1,0 +1,59 @@
+._mt_ot_ads_label,
+._mt_ot_ads_label_rich {
+    position: relative;
+    display: block;
+}
+
+._mt_ot_ads_label::after,
+._mt_ot_ads_label_rich::after {
+    content: attr(data-ads_label_owner);
+    border-radius: 3px 3px 0 0;
+    margin-right: 10px;
+    right: 0;
+    bottom: 0;
+}
+
+._mt_ot_ads_label::before,
+._mt_ot_ads_label_rich::before {
+    content: attr(data-ads_label);
+    margin-left: 10px;
+    border-radius: 0 0 3px 3px;
+    left: 0;
+    top: 0;
+}
+
+._mt_ot_ads_label::after,
+._mt_ot_ads_label::before,
+._mt_ot_ads_label_rich::after,
+._mt_ot_ads_label_rich::before {
+    position: absolute;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: 10px;
+    background: rgba(119, 119, 119, .7);
+    display: inline-block;
+    color: #fff;
+    line-height: 16px;
+    padding: 0 5px;
+    vertical-align: top;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+/*
+._mt_ot_ads_label:hover::after,
+._mt_ot_ads_label:hover::before {
+    opacity: 0;
+    transition: 0.3s;
+}
+*/
+._mt_ot_ads_label_rich::after,
+._mt_ot_ads_label_rich::before {
+    transform: scale(3);
+}
+
+._mt_ot_ads_label_rich::after {
+    transform-origin: right bottom;
+}
+
+._mt_ot_ads_label_rich::before {
+    transform-origin: left top;
+}

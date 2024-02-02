@@ -1,0 +1,153 @@
+body {
+    text-decoration: none;
+    color: white;
+    font-family: Open Sans;
+    font-weight: 500;
+    background: #1E1E1E;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+ul li {
+    display: block;
+    text-decoration: none;
+}
+
+.a-content {
+    text-decoration: overline;
+    text-decoration-color: #2CE8C2;
+}
+
+.a-content1 {
+    text-decoration: none;
+    text-decoration-color: transparent;
+    transition-property: all;
+    transition-duration: 0.6s;
+}
+
+
+
+.li-container {
+    margin-right: 40px;
+}
+
+.header {
+    padding-left: 320px;
+    padding-right: 320px;
+    display: flex;
+}
+
+.header-container {
+    align-items: center;
+    display: flex;
+}
+
+.ul-container {
+    height: 50px;
+    margin-left: 400px;
+    align-items: center;
+    display: flex;
+}
+
+.h1-content {
+    font-size: 40px;
+}
+
+.button-container {
+    margin-left: 85px;
+}
+
+.button-content {
+    display: block;
+    background: rgba(46, 236, 197, 0.1);
+    border: 1.5px solid #2EECC5;
+    padding-left: 30px;
+    font-size: 19px;
+    padding-right: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 50px;
+    transition-property: all;
+    transition-duration: 0.3s;
+}
+
+.main2 {
+    margin-top: 150px;
+    padding-left: 320px;
+    padding-right: 320px;
+}
+
+.h1-container-2 {
+    font-size: 20px;
+    color: #2EECC5;
+    margin-bottom: 50px;
+}
+
+.h2-container {
+    font-size: 17px;
+    color: #B5FEEF;
+}
+
+.p-container {
+    color: gray;
+    font-size: 17px;
+}
+
+.h2-container-2 {
+    text-align: center;
+    font-size: 25px;
+    color: #2CE8C2;
+    margin-top: 150px;
+    margin-bottom: 150px;
+}
+
+.a-link {
+    font-size: 25px;
+    transition-property: all;
+    transition-duration: 0.5s;
+}   
+
+.a-link:hover {
+    font-size: 27px;
+    margin-bottom: 10px;
+} 
+
+.img-p-content {
+    color: gray;
+    font-size: 17px;
+}
+
+.img-center-1 {
+    width: 900px;
+    border: 3px solid #1c7966;
+    border-radius: 20px;
+}
+
+.img-center-1-2 {
+    width: 300px;
+    border: 3px solid #1c7966;
+    border-radius: 20px;
+}
+
+.img-center-2 {
+    width: 900px;
+    border: 3px solid #1c7966;
+    border-radius: 20px;
+}
+
+.img-container {
+    margin-top: 50px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.img-example {
+    text-align: center;
+}
+
+.a-img {
+    text-align: left;
+}

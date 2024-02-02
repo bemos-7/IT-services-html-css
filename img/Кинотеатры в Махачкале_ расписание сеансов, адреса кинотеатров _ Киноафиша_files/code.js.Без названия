@@ -1,0 +1,203 @@
+(function(w, placeId, a){
+	if (typeof w._MT_OtclickObjects == 'undefined')
+		w._MT_OtclickObjects = [];
+
+	var vobs = function(ct) {
+		this.target = ct;
+		this.check_step = 500;
+		this.check_counter = 0;
+		this.check_interval = this.is_viewable = false;
+		this.viewable_ratio = 0.5;
+		this.viewable_delay = 2000;
+		this.check = function(cb) {
+			try {
+				(new IntersectionObserver(function (entries, observer) {
+					cb((entries && entries[0] && entries[0].intersectionRatio) || 0);
+				})).observe(this.target);
+			} catch (e) {
+				return false;
+			}
+			return true;
+		};
+		this.start = function(cb) {
+			this.check_interval = this.check_interval ? this.check_interval : setInterval(function () {
+				if (! this.check(function(ratio) {
+					if ((this.check_counter = ratio >= this.viewable_ratio ? this.check_counter + this.check_step : 0) >= this.viewable_delay) {
+						this.is_viewable = true;
+						this.stop();
+						try { cb(); } catch (e) {}
+					}
+				}.bind(this)));
+			}.bind(this), this.check_step);
+		};
+		this.stop = function stop() {
+			if (this.check_interval)
+				clearInterval(this.check_interval);
+			this.check_interval = false;
+		};
+	};
+
+	var OtclickBanner = function(ad, container) {
+		this.ad = ad;
+		this.container = container;
+		this.params = {
+			'info_url' : 'https://otclick-adv.ru/'
+		};
+		this.index = window._MT_OtclickObjects.length;
+		this.vo = new vobs(this.container);
+
+		this.ev = function(ev) {
+			var o = this, ad = o.ad;
+			switch (ev) {
+				case 'click':
+					if (ad.click_counter_url && ad.click_counter_url.length > 0 && ad.click_counter_url.charAt(0) != '{')
+						o.cacheFile(ad.click_counter_url);
+					break;
+				case 'close':
+					break;
+				case 'ready':
+					if (! ad.trace) {
+						o.ad.trace = true;
+						if (ad.trace_url && ad.trace_url.length > 0 && ad.trace_url.charAt(0) != '{')
+							o.cacheFile(ad.trace_url);
+						if (ad.tracing_url && ad.tracing_url.length > 0 && ad.tracing_url.charAt(0) != '{')
+							o.cacheFile(ad.tracing_url);
+						if (ad.show_counter_url && ad.show_counter_url.length > 0 && ad.show_counter_url.charAt(0) != '{')
+							o.cacheFile(ad.show_counter_url);
+						if (ad.ev_visible && ad.ev_visible.length > 0)
+							o.vo.start(function() {
+								o.cacheFile(o.ad.ev_visible);
+							}.bind(o));
+					}
+					break;
+				case 'quarter':
+					if (ad && ad.evq)
+						o.cacheFile(ad.evq);
+					break;
+				case 'half':
+					if (ad && ad.evh)
+						o.cacheFile(ad.evh);
+					break;
+				case 'threequarters':
+					if (ad && ad.evtq)
+						o.cacheFile(ad.evtq);
+					break;
+				case 'complete':
+					if (ad && ad.evc)
+						o.cacheFile(ad.evc);
+					break;
+			}
+		}
+
+		this.run = function() {
+			this.showImagePrefetch(this.container,this.ad.image_url);
+		}
+
+		this.showImage = function(ct,img) {
+			var o;
+
+			if (this.ad.cwidth && this.ad.cwidth != '0')
+				this.ad.width = this.ad.cwidth;
+			if (this.ad.cheight && this.ad.cheight != '0')
+				this.ad.height = this.ad.cheight;
+
+			o = '<a id="_mt_ot_href_' + placeId + '" href="' + this.ad.click_url + '" target="_blank">';
+			o += '<img src="' + img + '" border=0 width="' + this.ad.width + '" height="' + this.ad.height + '" title="" alt="" />';
+			o += '</a>';
+
+			ct.innerHTML = o;
+			ct.style.width = this.ad.width;
+			ct.style.height = this.ad.height;
+			ct.style.display = 'inline-block';
+			ct.style.margin = '0';
+			ct.style.padding = '0';
+			ct.style.textAlign = 'center';
+			ct.style.marginLeft = 'auto';
+			ct.style.marginRight = 'auto';
+
+			var hct = w.document.getElementById('_mt_ot_href_' + placeId);
+			hct.style.width = this.ad.width + 'px';
+			hct.style.height = this.ad.height + 'px';
+
+			if (this.ad.trace_url && this.ad.trace_url.length > 0)
+				this.cacheFile(this.ad.trace_url);
+			if (this.ad.tracing_url && this.ad.tracing_url.length > 0)
+				this.cacheFile(this.ad.tracing_url);
+			if (this.ad.ev_visible && this.ad.ev_visible.length > 0)
+				this.vo.start(function() {
+					this.cacheFile(this.ad.ev_visible);
+				}.bind(this));
+
+			if (this.ad.show_ord_info) {
+				this.showOrdInfo(hct);
+			}
+		}
+
+		this.showImagePrefetch = function(ct,img) {
+			var index = this.index;
+			if (this.ad.show_ord_info) {
+				var css = document.createElement('link');
+				css.setAttribute('rel', 'stylesheet');
+				css.setAttribute('type', 'text/css');
+				css.setAttribute('href', this.ad.styles_ord_url);
+				css.onload = css.onreadystatechange = function() { _MT_OtclickObjects[ index ].showImage(ct, img) }
+				document.getElementsByTagName('head')[ 0 ].appendChild(css);
+			} else
+				this.showImage(ct, img);
+		}
+
+		this.showOrdInfo = function(d) {
+			if (! d)
+				return;
+			d.setAttribute('data-ads_label', 'Реклама');
+			d.setAttribute('data-ads_label_owner', 'Рекламодатель ' + a.ord_aname);
+			d.classList.add('_mt_ot_ads_label');
+		}
+
+		this.cacheFile = function(u) {
+			(new Image(1, 1)).src = u.replace('{rid}', window._mt_rnd); 
+		}
+	}
+
+	var a_empty = true
+	for(var prop in a) {
+		if(a.hasOwnProperty(prop)) {
+			a_empty = false;
+			break;
+		}
+	}
+	if (a_empty)
+		return;
+
+	var ct = w.document.getElementById('_mt_ot_container_' + placeId)
+	if (! ct)
+		return;
+
+	var o = new OtclickBanner(a, ct);
+	w._MT_OtclickObjects.push(o);
+	o.run();
+})(window, 5099, {
+	'width':'300',
+	'height':'600',
+	'click_url':'https://otclick-adv.ru/core/click.cgi?pid=5099&bid=64926&ss=SS9MG0a9OnQx&idntfy=VUs64C5yhJr1SvF&ll=https%3A%2F%2Fmakhachkala.kinoafisha.info%2Fcinema%2F',
+	'image_url':'https://cdn.otclick-adv.ru/storage/6492/6/300_600.jpg',
+	'styles_ord_url':'https://otclick-adv.ru/storage/ord.css',
+	'show_ord_info':false,
+	'ord_aname':'',
+	'trace_url':'https://otclick-adv.ru/core/event.gif?eid=1&bid=64926&pid=5099&pw=0&ph=0&ow=1920&oh=1040&sw=1920&sh=1080&pd=24&ss=SS9MG0a9OnQx&idntfy=VUs64C5yhJr1SvF&ll=https%3A%2F%2Fmakhachkala.kinoafisha.info%2Fcinema%2F',
+	'tracing_url':'//amc.yandex.ru/show?cmn_id=40518&plt_id=128996&crv_id=314568&evt_t=render&ad_type=banner&rnd=1017339',
+	'ev_visible':'https://otclick-adv.ru/core/event.gif?eid=57&bid=64926&pid=5099&pw=0&ph=0&ow=1920&oh=1040&sw=1920&sh=1080&pd=24&ss=SS9MG0a9OnQx&idntfy=VUs64C5yhJr1SvF&ll=https%3A%2F%2Fmakhachkala.kinoafisha.info%2Fcinema%2F',
+	'show_counter_url':'',
+	'click_counter_url':'',
+	'cwidth':'300',
+	'cheight':'600',
+	'internalClick':'0',
+	'category_id':'85',
+	'visitor_id':'VUs64C5yhJr1SvF'
+});
+
+/* id 2 */
+
+(function() {
+	(new Image(1, 1)).src = 'https://x01.aidata.io/0.gif?pid=OTCLICK&id=VUs64C5yhJr1SvF';
+})();
